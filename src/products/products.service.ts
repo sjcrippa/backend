@@ -1,17 +1,33 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
+import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
-import { PrismaService } from 'src/prisma/prisma.service';
 
 @Injectable()
 export class ProductsService {
   constructor(private prismaService: PrismaService) {}
 
-  create(createProductDto: CreateProductDto) {
-    return this.prismaService.product.create({
-      data: createProductDto,
-    });
+  async create(createProductDto: CreateProductDto) {
+    try {
+      return await this.prismaService.product.create({
+        data: createProductDto,
+      });
+    } catch (error) {
+      if (error instanceof Prisma.PrismaClientKnownRequestError) {
+        // P2002 es el tipico error de registro repetido
+        if (error.code === 'P2002') {
+          throw new ConflictException(
+            `Product with name ${createProductDto.name} already exist.`,
+          );
+        }
+      }
+    }
   }
 
   findAll() {
