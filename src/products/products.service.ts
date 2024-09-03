@@ -32,11 +32,32 @@ export class ProductsService {
     return productFound;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: number, updateProductDto: UpdateProductDto) {
+    const productUpdated = await this.prismaService.product.update({
+      where: {
+        id,
+      },
+      data: updateProductDto,
+    });
+
+    if (!productUpdated) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
+
+    return productUpdated;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: number) {
+    const deletedProduct = await this.prismaService.product.delete({
+      where: {
+        id,
+      },
+    });
+
+    if (!deletedProduct) {
+      throw new NotFoundException(`Product with id ${id} not found`);
+    }
+
+    return deletedProduct;
   }
 }
