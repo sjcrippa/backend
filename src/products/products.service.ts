@@ -20,7 +20,7 @@ export class ProductsService {
       });
     } catch (error) {
       if (error instanceof Prisma.PrismaClientKnownRequestError) {
-        // P2002 es el tipico error de registro repetido
+        // P2002 It's the typical repeated registration error.
         if (error.code === 'P2002') {
           throw new ConflictException(
             `Product with name ${createProductDto.name} already exist.`,
@@ -42,7 +42,7 @@ export class ProductsService {
     });
 
     if (!productFound) {
-      throw new NotFoundException(`Product with id ${id} not found`);
+      throw new NotFoundException(`Product with id ${id} not found.`);
     }
 
     return productFound;
@@ -57,7 +57,7 @@ export class ProductsService {
     });
 
     if (!productUpdated) {
-      throw new NotFoundException(`Product with id ${id} not found`);
+      throw new NotFoundException(`Product with id ${id} not found.`);
     }
 
     return productUpdated;
@@ -71,7 +71,7 @@ export class ProductsService {
     });
 
     if (!deletedProduct) {
-      throw new NotFoundException(`Product with id ${id} not found`);
+      throw new NotFoundException(`Product with id ${id} not found.`);
     }
 
     return deletedProduct;
