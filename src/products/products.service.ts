@@ -1,9 +1,10 @@
-import { Prisma } from '@prisma/client';
 import {
   ConflictException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
+import { Prisma } from '@prisma/client';
 
 import { PrismaService } from 'src/prisma/prisma.service';
 import { CreateProductDto } from './dto/create-product.dto';
@@ -27,6 +28,7 @@ export class ProductsService {
           );
         }
       }
+      throw new InternalServerErrorException();
     }
   }
 
